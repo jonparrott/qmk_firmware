@@ -360,7 +360,7 @@ void rgblight_sethsv(uint16_t hue, uint8_t sat, uint8_t val) {
         uint16_t _hue;
         int8_t direction = ((rgblight_config.mode - 25) % 2) ? -1 : 1;
         uint16_t range = pgm_read_word(&RGBLED_GRADIENT_RANGES[(rgblight_config.mode - 25) / 2]);
-        for (uint8_t i = 0; i < RGBLED_NUM; i++) {
+        for (uint8_t i = 0; i < RGBLED_NUM; i += RGBLED_STRIDE) {
           _hue = (range / RGBLED_NUM * i * direction + hue + 360) % 360;
           dprintf("rgblight rainbow set hsv: %u,%u,%d,%u\n", i, _hue, direction, range);
           sethsv(_hue, sat, val, (LED_TYPE *)&led[i]);
@@ -391,7 +391,7 @@ uint8_t rgblight_get_val(void) {
 void rgblight_setrgb(uint8_t r, uint8_t g, uint8_t b) {
   if (!rgblight_config.enable) { return; }
 
-  for (uint8_t i = 0; i < RGBLED_NUM; i++) {
+  for (uint8_t i = 0; i < RGBLED_NUM; i += RGBLED_STRIDE) {
     led[i].r = r;
     led[i].g = g;
     led[i].b = b;
@@ -541,7 +541,7 @@ void rgblight_effect_rainbow_swirl(uint8_t interval) {
     return;
   }
   last_timer = timer_read();
-  for (i = 0; i < RGBLED_NUM; i++) {
+  for (i = 0; i < RGBLED_NUM; i += RGBLED_STRIDE) {
     hue = (360 / RGBLED_NUM * i + current_hue) % 360;
     sethsv(hue, rgblight_config.sat, rgblight_config.val, (LED_TYPE *)&led[i]);
   }
@@ -570,7 +570,7 @@ void rgblight_effect_snake(uint8_t interval) {
     return;
   }
   last_timer = timer_read();
-  for (i = 0; i < RGBLED_NUM; i++) {
+  for (i = 0; i < RGBLED_NUM; i += RGBLED_STRIDE) {
     led[i].r = 0;
     led[i].g = 0;
     led[i].b = 0;
@@ -608,7 +608,7 @@ void rgblight_effect_knight(uint8_t interval) {
   uint8_t i, cur;
 
   // Set all the LEDs to 0
-  for (i = 0; i < RGBLED_NUM; i++) {
+  for (i = 0; i < RGBLED_NUM; i += RGBLED_STRIDE) {
     led[i].r = 0;
     led[i].g = 0;
     led[i].b = 0;
@@ -648,7 +648,7 @@ void rgblight_effect_christmas(void) {
   }
   last_timer = timer_read();
   current_offset = (current_offset + 1) % 2;
-  for (i = 0; i < RGBLED_NUM; i++) {
+  for (i = 0; i < RGBLED_NUM; i += RGBLED_STRIDE) {
     hue = 0 + ((i/RGBLIGHT_EFFECT_CHRISTMAS_STEP + current_offset) % 2) * 120;
     sethsv(hue, rgblight_config.sat, rgblight_config.val, (LED_TYPE *)&led[i]);
   }
