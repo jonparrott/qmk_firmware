@@ -64,8 +64,8 @@
 #define RGBLIGHT_VAL_STEP 17
 #endif
 
-#ifndef RGBLIGHT_STRIDE
-#define RGBLIGHT_STRIDE 1
+#ifndef RGBLED_STRIDE
+#define RGBLED_STRIDE 1
 #endif
 
 #define RGBLED_TIMER_TOP F_CPU/(256*64)
